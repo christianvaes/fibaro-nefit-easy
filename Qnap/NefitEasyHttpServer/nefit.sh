@@ -29,6 +29,14 @@ elif [ `/sbin/getcfg ${QPKG_NAME} Enable -u -d FALSE -f /etc/config/qpkg.conf` !
 echo "${QPKG_NAME} is disabled."
 exit 1
 fi
+
+echo "Getting newest $QPKG_NAME code from web"
+(cd /share/MD0_DATA/.qpkg/NefitEasyHttpServer && /Apps/bin/git pull &&  /bin/sync) > /share/MD0_DATA/.qpkg/NefitEasyHttpServer/update.log
+if ! grep -q "Already up-to-date." "/share/MD0_DATA/.qpkg/NefitEasyHttpServer/update.log"; then
+  echo "Installing ${QPKG_NAME} via npm install"
+  /opt/bin/npm install
+fi
+
 /opt/bin/nohup ${DAEMON_OPTS} &
 ;;
 stop)
